@@ -165,7 +165,7 @@ const logPoap = async (
       (ch) => ch.name === DISCORD_CHANNEL_MAINNET_NAME
   );
 
-  const embed = getEmbedPoap(  imageUrl, action, tokenId, eventId,
+  const embed = getEmbedPoap(imageUrl, action, tokenId, eventId,
                         eventName, address, poapPower, ens, network);
 
     if (channel){
