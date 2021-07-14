@@ -165,30 +165,9 @@ const logPoap = async (
       (ch) => ch.name === DISCORD_CHANNEL_MAINNET_NAME
   );
 
-  const embed = new Discord.MessageEmbed() // Ver 12.2.0 of Discord.js
-    .setTitle(`${action}: ${eventName} `)
-    .setColor(network === MAINNET_NETWORK ? "#5762cf" : "#48A9A9")
-    // removed, maybe we can show mainnet etherscan link
-    // .setDescription(
-    // 	`POAP Power: ${poapPower} ${emoji(poapPower)} | Token ID# ${tokenId} | Event ID#: ${eventId}`
-    // )
-    .addFields(
-      {
-        name: "POAP Power",
-        value: `${emoji(poapPower)}  ${poapPower}`,
-        inline: true,
-      },
-      { name: "Token ID", value: `#${tokenId}`, inline: true },
-      { name: "Event ID", value: `#${eventId}`, inline: true }
-    )
-	.setURL(`https://poap.gallery/event/${eventId}/?utm_share=discordfeed`)
-    .setTimestamp()
-    .setAuthor(
-      ens ? ens : address.toLowerCase(),
-      ``,
-      `https://app.poap.xyz/scan/${address}/?utm_share=discordfeed`
-    )
-    .setThumbnail(imageUrl);
+  const embed = getEmbedPoap(  imageUrl, action, tokenId, eventId,
+                        eventName, address, poapPower, ens, network);
+
     if (channel){
         channel.send(embed);
     }
@@ -197,6 +176,41 @@ const logPoap = async (
         channelMainnetOnly.send(embed);
     }
 };
+
+const getEmbedPoap = (imageUrl,
+                        action,
+                        tokenId,
+                        eventId,
+                        eventName,
+                        address,
+                        poapPower,
+                        ens,
+                        network) => {
+    return new Discord.MessageEmbed() // Ver 12.2.0 of Discord.js
+        .setTitle(`${action}: ${eventName} `)
+        .setColor(network === MAINNET_NETWORK ? "#5762cf" : "#48A9A9")
+        // removed, maybe we can show mainnet etherscan link
+        // .setDescription(
+        // 	`POAP Power: ${poapPower} ${emoji(poapPower)} | Token ID# ${tokenId} | Event ID#: ${eventId}`
+        // )
+        .addFields(
+            {
+                name: "POAP Power",
+                value: `${emoji(poapPower)}  ${poapPower}`,
+                inline: true,
+            },
+            { name: "Token ID", value: `#${tokenId}`, inline: true },
+            { name: "Event ID", value: `#${eventId}`, inline: true }
+        )
+        .setURL(`https://poap.gallery/event/${eventId}/?utm_share=discordfeed`)
+        .setTimestamp()
+        .setAuthor(
+            ens ? ens : address.toLowerCase(),
+            ``,
+            `https://app.poap.xyz/scan/${address}/?utm_share=discordfeed`
+        )
+        .setThumbnail(imageUrl);
+}
 
 const emoji = (poapPower) => {
   return poapPower <= 5
