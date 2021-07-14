@@ -4,6 +4,7 @@ require("dotenv").config();
 const {
   DISCORD_TOKEN,
   DISCORD_CHANNEL_NAME,
+  DISCORD_CHANNEL_MAINNET_NAME,
   XDAI_WS_PROVIDER,
   MAINNET_WS_PROVIDER,
 } = process.env;
@@ -159,10 +160,14 @@ const logPoap = async (
   const channel = bot.channels.cache.find(
     (ch) => ch.name === DISCORD_CHANNEL_NAME
   );
-  if (!channel) return;
+
+  const channelMainnetOnly = bot.channels.cache.find(
+      (ch) => ch.name === DISCORD_CHANNEL_MAINNET_NAME
+  );
+
   const embed = new Discord.MessageEmbed() // Ver 12.2.0 of Discord.js
     .setTitle(`${action}: ${eventName} `)
-    .setColor(network == MAINNET_NETWORK ? "#5762cf" : "#48A9A9")
+    .setColor(network === MAINNET_NETWORK ? "#5762cf" : "#48A9A9")
     // removed, maybe we can show mainnet etherscan link
     // .setDescription(
     // 	`POAP Power: ${poapPower} ${emoji(poapPower)} | Token ID# ${tokenId} | Event ID#: ${eventId}`
@@ -184,7 +189,13 @@ const logPoap = async (
       `https://app.poap.xyz/scan/${address}/?utm_share=discordfeed`
     )
     .setThumbnail(imageUrl);
-  channel.send(embed);
+    if (channel){
+        channel.send(embed);
+    }
+
+    if(channelMainnetOnly && network === MAINNET_NETWORK){
+        channelMainnetOnly.send(embed);
+    }
 };
 
 const emoji = (poapPower) => {
